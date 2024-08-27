@@ -25,15 +25,34 @@ export const DashboardProvider = ({ children }) => {
         key: 'CWPP',
         name: 'CWPP Dashboard',
         widgetList: [
-            { id: 'top-5-namespace', name: 'Top 5 Namespace Specific Alerts', data: [] }, { id: 'workload-alert', name: 'WorkLoad Alert', data: [] }
+            { id: 'top-5-namespace', name: 'Top 5 Namespace Specific Alerts', data: [], type: 'graphchart' }, { id: 'workload-alert', name: 'WorkLoad Alert', data: [], type: 'graphchart' }
         ]
+        ,
+
     },
     {
         key: 'Image',
         name: 'Registry Scan',
         widgetList: [
-            { id: 'image-risk-assessment', name: 'Image Risk Assessment', data: [] }, { id: 'image-security-issues', name: 'Image Security Issues', data: [] }
-        ]
+            {
+                id: 'image-risk-assessment', name: 'Image Risk Assessment', data: [
+                    { name: "Failed", value: 1689 },
+                    { name: "Warning", value: 681 },
+                    { name: "Not available", value: 36 },
+                    { name: "Passed", value: 7253 }
+                ]
+                , type: 'barchart'
+            }, {
+                id: 'image-security-issues', name: 'Image Security Issues', data: [
+                    { name: "Critical", value: 19 },
+                    { name: "High", value: 781 },
+                    { name: "Low", value: 306 },
+                    { name: "Abnormal", value: 53 }
+                ]
+                , type: 'barchart'
+            }
+        ],
+
     }
     ]
 
@@ -64,13 +83,14 @@ export const DashboardProvider = ({ children }) => {
     const [selectedCategory, setSelectedCategory] = useState('')
     const [categoryWidgetList, setCategoryWidgetList] = useState({})
     const [categoryActiveWidget, setCategoryActiveWidget] = useState(renderSelectedCategoryWidgets)
+    const [selectedWidgets, setSelectedWidgets] = useState({})
 
 
 
 
 
     return (
-        <DashboardContext.Provider value={{ categorySection, setCategorySection, categoryList, selectedCategory, setSelectedCategory, categoryActiveWidget, setCategoryActiveWidget, renderSelectedCategoryWidgets }}>
+        <DashboardContext.Provider value={{ categorySection, setCategorySection, categoryList, selectedCategory, setSelectedCategory, categoryActiveWidget, setCategoryActiveWidget, renderSelectedCategoryWidgets, selectedWidgets, setSelectedWidgets }}>
             {children}
         </DashboardContext.Provider>
     );

@@ -1,5 +1,5 @@
 'use client'
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { PieChart, Pie, Cell, Legend } from 'recharts';
 
 const DonutChart = ({ data }) => {
 
@@ -11,7 +11,7 @@ const DonutChart = ({ data }) => {
     const renderCustomLegend = ({ payload }) => {
 
         return (
-            <div className="flex flex-col items-start p-4">
+            <div className="flex flex-col items-start  p-4">
                 {data.map((entry, index) => (
                     <div key={`legend-item-${index}`} className="flex items-center mb-2">
                         <div

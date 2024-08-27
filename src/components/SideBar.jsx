@@ -6,10 +6,9 @@ import TabList from './TabList'
 import List from './List'
 
 const SideBar = ({ isOpen, handleClose }) => {
-    const { categoryList, categoryActiveWidget, setCategoryActiveWidget, selectedCategory } = useContext(DashboardContext)
+    const { categoryList, categoryActiveWidget, setCategoryActiveWidget, selectedCategory, selectedWidgets, setSelectedWidgets } = useContext(DashboardContext)
     const tabs = categoryList.map((item) => item.key);
     const [activeTab, setActiveTab] = useState('');
-    const [selectedWidgets, setSelectedWidgets] = useState([])
 
     useEffect(() => {
         setActiveTab(selectedCategory)
@@ -17,21 +16,26 @@ const SideBar = ({ isOpen, handleClose }) => {
 
     useEffect(() => {
         const selectedCategory = categoryList.filter((item) => item.key === activeTab)[0]
-        if (selectedCategory) {
-            setSelectedWidgets(selectedCategory?.widgetList)
+        if (selectedCategory && !selectedWidgets[activeTab]) {
+            setSelectedWidgets({ ...selectedWidgets, [activeTab]: selectedCategory?.widgetList })
         }
     }, [activeTab])
 
     const handleCheckboxChange = (id) => {
-        setSelectedWidgets((prevWidgets) =>
-            prevWidgets.map((widget) =>
-                widget.id === id ? { ...widget, checked: !widget.checked } : widget
-            )
+        setSelectedWidgets(
+
+            {
+                ...selectedWidgets,
+                [activeTab]: selectedWidgets[activeTab].map((widget) =>
+                    widget.id === id ? { ...widget, checked: !widget.checked } : widget
+                )
+            }
+
         );
     };
 
     const handleConfirm = () => {
-        const selectedWidget = selectedWidgets.filter((item) => item.checked)
+        const selectedWidget = selectedWidgets[activeTab]?.filter((item) => item.checked)
         const updatedCategory = categoryActiveWidget.map((item) => {
             if (item.key === activeTab) {
                 return ({ ...item, widgetList: selectedWidget })
@@ -40,6 +44,7 @@ const SideBar = ({ isOpen, handleClose }) => {
 
         })
         setCategoryActiveWidget(updatedCategory)
+        handleClose()
     }
 
     return (
@@ -51,7 +56,7 @@ const SideBar = ({ isOpen, handleClose }) => {
                 <div>
                     <TabList tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
                 </div>
-                <List selectedWidgets={selectedWidgets} setSelectedWidgets={selectedWidgets} handleCheckboxChange={handleCheckboxChange} />
+                <List selectedWidgets={selectedWidgets[activeTab] || []} handleCheckboxChange={handleCheckboxChange} />
             </div>
             <div className="flex justify-end space-x-4 mt-4 p-4">
                 <button onClick={handleClose} className="border border-gray-400 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-100">
